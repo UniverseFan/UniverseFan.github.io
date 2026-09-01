@@ -1,0 +1,63 @@
+name: Publish blog
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: github.event.issue.user.login == github.repository_owner && contains(github.event.issue.labels.*.name, 'blog')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create blog post
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const section = (label) => {
+              const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+              const pattern = new RegExp(`### ${escaped}\\n([\\s\\S]*?)(?=\\n### |$)`);
+              return (issue.body.match(pattern)?.[1] || "").trim();
+            };
+            const summary = section("摘要").replace(/\s+/g, " ").slice(0, 180);
+            const body = section("正文");
+            const tags = section("标签")
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter(Boolean);
+            const date = issue.created_at.slice(0, 10);
+            const path = `src/content/blog/${date}-${issue.number}.md`;
+            const frontmatter = [
+              "---",
+              `title: ${JSON.stringify(issue.title)}`,
+              `description: ${JSON.stringify(summary)}`,
+              'icon: "1"',
+              `pubDate: ${JSON.stringify(date)}`,
+              `tags: ${JSON.stringify(tags)}`,
+              "published: true",
+              "---",
+              "",
+            ].join("\n");
+            const content = `${frontmatter}${body}\n`;
+            await github.rest.repos.createOrUpdateFileContents({
+              owner,
+              repo,
+              path,
+              message: `blog: ${issue.title}`,
+              content: Buffer.from(content).toString("base64"),
+              branch: context.payload.repository.default_branch,
+            });
+            await github.rest.issues.addLabels({ owner, repo, issue_number: issue.number, labels: ["published"] });
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issue.number,
+              body: `已生成文章文件 \`${path}\`，网站将在部署完成后更新。`,
+            });
+            await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: "closed" });

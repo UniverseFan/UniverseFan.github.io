@@ -1,0 +1,29 @@
+name: 发布一篇博客
+description: 写下文章并拖入图片，提交后会自动发布到网站。
+title: ""
+labels: ["blog"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 摘要
+      description: 会显示在博客列表中。
+      placeholder: 用一两句话留下这篇文章的引子。
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: 标签
+      description: 用英文逗号分隔。
+      placeholder: life, travel
+    validations:
+      required: false
+  - type: textarea
+    id: content
+    attributes:
+      label: 正文
+      description: 支持 Markdown。图片可直接拖入编辑器。
+      placeholder: 从这里开始写。
+    validations:
+      required: true
