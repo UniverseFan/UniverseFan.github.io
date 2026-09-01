@@ -1,0 +1,26 @@
+name: 发布 Learn
+description: 记录学习笔记、阅读思考和技术实践。
+title: ""
+labels: ["publish-learn"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 摘要
+      placeholder: 这份笔记要解决什么问题？
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: 标签
+      description: 用英文逗号分隔。
+      placeholder: golang, database
+  - type: textarea
+    id: content
+    attributes:
+      label: 正文
+      description: 支持 Markdown。图片可直接拖入编辑器。
+      placeholder: 从这里开始写。
+    validations:
+      required: true

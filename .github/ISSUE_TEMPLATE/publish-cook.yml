@@ -1,0 +1,26 @@
+name: 发布 Cook
+description: 记录菜谱、做饭过程和厨房里的照片。
+title: ""
+labels: ["publish-cook"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 摘要
+      placeholder: 这道菜或这次尝试，最想记住什么？
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: 标签
+      description: 用英文逗号分隔。
+      placeholder: recipe, dinner
+  - type: textarea
+    id: content
+    attributes:
+      label: 正文
+      description: 支持 Markdown。图片可直接拖入编辑器。
+      placeholder: 食材、步骤、复盘，或任何想写的内容。
+    validations:
+      required: true

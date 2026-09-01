@@ -12,7 +12,7 @@ jobs:
   publish:
     if: >-
       github.event.issue.user.login == github.repository_owner &&
-      (contains(github.event.issue.labels.*.name, 'publish-entry') || contains(github.event.issue.labels.*.name, 'blog')) &&
+      (contains(github.event.issue.labels.*.name, 'publish-blog') || contains(github.event.issue.labels.*.name, 'publish-cook') || contains(github.event.issue.labels.*.name, 'publish-learn') || contains(github.event.issue.labels.*.name, 'publish-work') || contains(github.event.issue.labels.*.name, 'blog')) &&
       !contains(github.event.issue.labels.*.name, 'published')
     runs-on: ubuntu-latest
     steps:
@@ -28,9 +28,11 @@ jobs:
               const pattern = new RegExp(`### ${escaped}\\n([\\s\\S]*?)(?=\\n### |$)`);
               return (issue.body.match(pattern)?.[1] || "").trim();
             };
-            const sections = { Blog: "blog", Cook: "cook", Learn: "learn", Work: "work" };
-            const selected = readSection("发布到");
-            const collection = sections[selected] || "blog";
+            const labels = issue.labels.map((label) => label.name);
+            const collection = labels.includes("publish-cook") ? "cook"
+              : labels.includes("publish-learn") ? "learn"
+              : labels.includes("publish-work") ? "work"
+              : "blog";
             const summary = readSection("摘要").replace(/\s+/g, " ").slice(0, 180);
             const body = readSection("正文");
             const tags = readSection("标签").split(",").map((tag) => tag.trim()).filter(Boolean);
