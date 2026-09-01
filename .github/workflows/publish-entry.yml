@@ -2,7 +2,7 @@ name: Publish entry
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [opened, edited]
 
 permissions:
   contents: write
@@ -10,10 +10,7 @@ permissions:
 
 jobs:
   publish:
-    if: >-
-      github.event.issue.user.login == github.repository_owner &&
-      (contains(github.event.issue.labels.*.name, 'publish-blog') || contains(github.event.issue.labels.*.name, 'publish-cook') || contains(github.event.issue.labels.*.name, 'publish-learn') || contains(github.event.issue.labels.*.name, 'publish-work') || contains(github.event.issue.labels.*.name, 'blog')) &&
-      !contains(github.event.issue.labels.*.name, 'published')
+    if: github.event.issue.user.login == github.repository_owner
     runs-on: ubuntu-latest
     steps:
       - name: Create published entry
@@ -23,28 +20,32 @@ jobs:
             const issue = context.payload.issue;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
+            const marker = "<!-- site-entry:published -->";
+            const titleMatch = issue.title.match(/^\[(Blog|Cook|Learn|Work)\]\s*(.+)$/i);
+            if (!titleMatch || (issue.body || "").includes(marker)) {
+              core.notice("未发布：标题需以 [Blog]、[Cook]、[Learn] 或 [Work] 开头，且内容只会发布一次。");
+              return;
+            }
             const readSection = (label) => {
               const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
               const pattern = new RegExp(`### ${escaped}\\n([\\s\\S]*?)(?=\\n### |$)`);
-              return (issue.body.match(pattern)?.[1] || "").trim();
+              return ((issue.body || "").match(pattern)?.[1] || "").trim();
             };
-            const labels = issue.labels.map((label) => label.name);
-            const collection = labels.includes("publish-cook") ? "cook"
-              : labels.includes("publish-learn") ? "learn"
-              : labels.includes("publish-work") ? "work"
-              : "blog";
-            const summary = readSection("摘要").replace(/\s+/g, " ").slice(0, 180);
-            const body = readSection("正文");
+            const collection = titleMatch[1].toLowerCase();
+            const title = titleMatch[2].trim();
+            const rawBody = (issue.body || "").trim();
+            const body = readSection("正文") || rawBody;
+            const summary = (readSection("摘要") || title).replace(/\s+/g, " ").slice(0, 180);
             const tags = readSection("标签").split(",").map((tag) => tag.trim()).filter(Boolean);
-            if (!summary || !body) {
-              core.setFailed("Issue 必须包含“摘要”和“正文”。");
+            if (!body) {
+              core.setFailed("Issue 正文不能为空。");
               return;
             }
             const date = issue.created_at.slice(0, 10);
             const path = `src/content/${collection}/${date}-${issue.number}.md`;
             const frontmatter = [
               "---",
-              `title: ${JSON.stringify(issue.title)}`,
+              `title: ${JSON.stringify(title)}`,
               `description: ${JSON.stringify(summary)}`,
               'icon: "1"',
               `pubDate: ${JSON.stringify(date)}`,
@@ -57,15 +58,20 @@ jobs:
               owner,
               repo,
               path,
-              message: `${collection}: ${issue.title}`,
+              message: `${collection}: ${title}`,
               content: Buffer.from(`${frontmatter}${body}\n`).toString("base64"),
               branch: context.payload.repository.default_branch,
             });
-            await github.rest.issues.addLabels({ owner, repo, issue_number: issue.number, labels: ["published"] });
             await github.rest.issues.createComment({
               owner,
               repo,
               issue_number: issue.number,
               body: `已发布到 **${collection}**，等待 GitHub Pages 部署完成。`,
             });
-            await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: "closed" });
+            await github.rest.issues.update({
+              owner,
+              repo,
+              issue_number: issue.number,
+              state: "closed",
+              body: `${rawBody}\n\n${marker}`,
+            });

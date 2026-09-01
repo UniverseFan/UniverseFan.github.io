@@ -1,7 +1,6 @@
 name: 发布 Blog
 description: 写下日常、玩乐或任何想记录的事。
-title: ""
-labels: ["publish-blog"]
+title: "[Blog] "
 body:
   - type: textarea
     id: summary

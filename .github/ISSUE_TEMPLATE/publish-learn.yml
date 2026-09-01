@@ -1,7 +1,6 @@
 name: 发布 Learn
 description: 记录学习笔记、阅读思考和技术实践。
-title: ""
-labels: ["publish-learn"]
+title: "[Learn] "
 body:
   - type: textarea
     id: summary

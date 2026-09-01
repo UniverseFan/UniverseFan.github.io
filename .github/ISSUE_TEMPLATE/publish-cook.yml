@@ -1,7 +1,6 @@
 name: 发布 Cook
 description: 记录菜谱、做饭过程和厨房里的照片。
-title: ""
-labels: ["publish-cook"]
+title: "[Cook] "
 body:
   - type: textarea
     id: summary

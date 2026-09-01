@@ -1,7 +1,6 @@
 name: 发布 Work
 description: 记录项目复盘、工作思考或职业经历。
-title: ""
-labels: ["publish-work"]
+title: "[Work] "
 body:
   - type: textarea
     id: summary
