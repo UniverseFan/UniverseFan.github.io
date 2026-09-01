@@ -1,5 +1,8 @@
 ---
 import SectionPage from "@/layouts/SectionPage.astro";
+import { getCollection } from "astro:content";
+import EntryFeed from "@/components/EntryFeed.astro";
+const entries = (await getCollection("work", ({ data }) => data.published)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <SectionPage
@@ -38,6 +41,10 @@ import SectionPage from "@/layouts/SectionPage.astro";
           <p class="mt-2 font-semibold">后端开发实习生</p>
         </article>
       </div>
+    </section>
+    <section>
+      <p class="text-pblack text-sm font-semibold">工作记录</p>
+      <EntryFeed entries={entries} section="work" emptyMessage="项目记录，等待补充。" />
     </section>
   </div>
 </SectionPage>
