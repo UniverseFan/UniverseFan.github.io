@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_run:
-    workflows: ["Publish blog"]
+    workflows: ["Publish entry"]
     types: [completed]
   workflow_dispatch:
 

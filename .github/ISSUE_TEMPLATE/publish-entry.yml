@@ -1,14 +1,25 @@
-name: 发布一篇博客
-description: 写下文章并拖入图片，提交后会自动发布到网站。
+name: 发布一条内容
+description: 选择栏目，写下内容并拖入图片，提交后会自动发布到网站。
 title: ""
-labels: ["blog"]
+labels: ["publish-entry"]
 body:
+  - type: dropdown
+    id: section
+    attributes:
+      label: 发布到
+      options:
+        - Blog
+        - Cook
+        - Learn
+        - Work
+    validations:
+      required: true
   - type: textarea
     id: summary
     attributes:
       label: 摘要
-      description: 会显示在博客列表中。
-      placeholder: 用一两句话留下这篇文章的引子。
+      description: 会显示在栏目列表中。
+      placeholder: 用一两句话留下这篇内容的引子。
     validations:
       required: true
   - type: input

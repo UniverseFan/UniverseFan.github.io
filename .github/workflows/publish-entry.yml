@@ -1,8 +1,8 @@
-name: Publish blog
+name: Publish entry
 
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
 
 permissions:
   contents: write
@@ -10,29 +10,36 @@ permissions:
 
 jobs:
   publish:
-    if: github.event.issue.user.login == github.repository_owner && contains(github.event.issue.labels.*.name, 'blog')
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      (contains(github.event.issue.labels.*.name, 'publish-entry') || contains(github.event.issue.labels.*.name, 'blog')) &&
+      !contains(github.event.issue.labels.*.name, 'published')
     runs-on: ubuntu-latest
     steps:
-      - name: Create blog post
+      - name: Create published entry
         uses: actions/github-script@v7
         with:
           script: |
             const issue = context.payload.issue;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const section = (label) => {
+            const readSection = (label) => {
               const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
               const pattern = new RegExp(`### ${escaped}\\n([\\s\\S]*?)(?=\\n### |$)`);
               return (issue.body.match(pattern)?.[1] || "").trim();
             };
-            const summary = section("摘要").replace(/\s+/g, " ").slice(0, 180);
-            const body = section("正文");
-            const tags = section("标签")
-              .split(",")
-              .map((tag) => tag.trim())
-              .filter(Boolean);
+            const sections = { Blog: "blog", Cook: "cook", Learn: "learn", Work: "work" };
+            const selected = readSection("发布到");
+            const collection = sections[selected] || "blog";
+            const summary = readSection("摘要").replace(/\s+/g, " ").slice(0, 180);
+            const body = readSection("正文");
+            const tags = readSection("标签").split(",").map((tag) => tag.trim()).filter(Boolean);
+            if (!summary || !body) {
+              core.setFailed("Issue 必须包含“摘要”和“正文”。");
+              return;
+            }
             const date = issue.created_at.slice(0, 10);
-            const path = `src/content/blog/${date}-${issue.number}.md`;
+            const path = `src/content/${collection}/${date}-${issue.number}.md`;
             const frontmatter = [
               "---",
               `title: ${JSON.stringify(issue.title)}`,
@@ -44,13 +51,12 @@ jobs:
               "---",
               "",
             ].join("\n");
-            const content = `${frontmatter}${body}\n`;
             await github.rest.repos.createOrUpdateFileContents({
               owner,
               repo,
               path,
-              message: `blog: ${issue.title}`,
-              content: Buffer.from(content).toString("base64"),
+              message: `${collection}: ${issue.title}`,
+              content: Buffer.from(`${frontmatter}${body}\n`).toString("base64"),
               branch: context.payload.repository.default_branch,
             });
             await github.rest.issues.addLabels({ owner, repo, issue_number: issue.number, labels: ["published"] });
@@ -58,6 +64,6 @@ jobs:
               owner,
               repo,
               issue_number: issue.number,
-              body: `已生成文章文件 \`${path}\`，网站将在部署完成后更新。`,
+              body: `已发布到 **${collection}**，等待 GitHub Pages 部署完成。`,
             });
             await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: "closed" });

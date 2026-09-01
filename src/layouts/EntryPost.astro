@@ -1,0 +1,39 @@
+---
+import BaseHead from "@/components/BaseHead.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  section: "cook" | "learn" | "work";
+  sectionName: string;
+}
+
+const { title, description, pubDate, updatedDate, tags, section, sectionName } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head><BaseHead title={`${title} | Evan.Zhang`} description={description} /></head>
+  <body>
+    <Header />
+    <main class="container mx-auto px-4 md:px-10 pt-10 pb-24">
+      <article class="max-w-3xl mx-auto">
+        <header class="border-b-3 border-black pb-10">
+          <a href={`/${section}`} class="inline-flex items-center gap-2 text-sm hover:underline"><span aria-hidden="true">&larr;</span> {sectionName}</a>
+          <p class="mt-10 text-pblack text-sm"><FormattedDate date={pubDate} />{updatedDate ? <span> · 更新于 <FormattedDate date={updatedDate} /></span> : null}</p>
+          <h1 class="mt-5 text-5xl md:text-7xl font-bold leading-[1.05]">{title}</h1>
+          <p class="mt-6 max-w-2xl text-xl leading-8">{description}</p>
+          {tags?.length ? <ul class="mt-8 flex flex-wrap gap-2">{tags.map((tag) => <li class="border-1 border-black rounded-full px-3 py-1 text-sm">{tag}</li>)}</ul> : null}
+        </header>
+        <div class="prose prose-lg max-w-none py-12 prose-headings:font-bold prose-headings:tracking-normal prose-a:text-pblack prose-a:underline prose-img:rounded-lg prose-img:border-3 prose-img:border-black prose-img:shadow-card prose-blockquote:border-pgreen prose-blockquote:bg-pgreen/30 prose-blockquote:py-1 prose-blockquote:not-italic"><slot /></div>
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>
