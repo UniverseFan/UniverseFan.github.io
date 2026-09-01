@@ -1,0 +1,60 @@
+---
+const modules = [
+  {
+    number: "01",
+    title: "Blogs",
+    chinese: "玩乐记录",
+    description: "游戏、出行、灵感，还有所有想留下来的小事。",
+    href: "/blog",
+    color: "bg-pblue",
+  },
+  {
+    number: "02",
+    title: "Cook",
+    chinese: "料理升级",
+    description: "从复刻一道菜开始，把厨房里的进步认真记下来。",
+    href: "/cook",
+    color: "bg-pyellow",
+  },
+  {
+    number: "03",
+    title: "Learn",
+    chinese: "学习笔记",
+    description: "技术、阅读与问题拆解，沉淀成随时可回看的答案。",
+    href: "/learn",
+    color: "bg-ppink",
+  },
+  {
+    number: "04",
+    title: "Work",
+    chinese: "个人经历",
+    description: "后端研发、工程实践，以及我正在走的职业路径。",
+    href: "/work",
+    color: "bg-pgreen",
+  },
+];
+---
+
+<section class="px-4 md:px-0 pb-28" aria-labelledby="areas-title">
+  <div class="flex flex-col gap-3 mb-10">
+    <p class="text-pblack tracking-[0.18em] uppercase text-sm">Four directions</p>
+    <h2 id="areas-title" class="text-4xl font-bold">生活和工作的四个切面。</h2>
+  </div>
+  <ul class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    {modules.map((module) => (
+      <li>
+        <a href={module.href} class={`group block min-h-64 ${module.color} border-3 border-black rounded-lg p-6 shadow-card hover:shadow-hover transition`}>
+          <div class="flex items-start justify-between gap-6">
+            <p class="font-kablamo text-5xl">{module.number}</p>
+            <span class="border-1 border-black rounded-full h-10 w-10 grid place-items-center text-xl group-hover:translate-x-1 transition">&rarr;</span>
+          </div>
+          <div class="mt-14">
+            <h3 class="text-3xl font-bold">{module.title}</h3>
+            <p class="mt-1 font-semibold">{module.chinese}</p>
+            <p class="mt-4 max-w-md leading-7">{module.description}</p>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

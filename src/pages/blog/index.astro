@@ -1,0 +1,24 @@
+---
+import BaseHead from "@/components/BaseHead.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title="Blogs | Evan.Zhang" description="Evan Zhang 的玩乐记录。" />
+  </head>
+  <body>
+    <Header />
+    <main class="container mx-auto px-4 md:px-10 py-20">
+      <section class="max-w-3xl">
+        <p class="text-pblack tracking-[0.18em] uppercase text-sm">01 / Blogs</p>
+        <h1 class="mt-4 text-5xl md:text-7xl font-bold">正在玩什么？</h1>
+        <p class="mt-6 text-lg leading-8">这里收集游戏、出行、好奇心和不那么严肃的日常。第一批记录正在整理中。</p>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

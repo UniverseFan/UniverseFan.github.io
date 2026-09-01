@@ -1,0 +1,35 @@
+---
+import BaseHead from "@/components/BaseHead.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+
+interface Props {
+  title: string;
+  eyebrow: string;
+  description: string;
+  accent: string;
+}
+
+const { title, eyebrow, description, accent } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <BaseHead title={`${title} | Evan.Zhang`} description={description} />
+  </head>
+  <body>
+    <Header />
+    <main class="container mx-auto px-4 md:px-10 py-14 md:py-20">
+      <section class={`border-3 border-black rounded-lg ${accent} p-6 md:p-10 shadow-card`}>
+        <p class="text-sm tracking-[0.18em] uppercase">{eyebrow}</p>
+        <h1 class="mt-5 text-5xl md:text-7xl font-bold">{title}</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8">{description}</p>
+      </section>
+      <section class="py-14 max-w-4xl">
+        <slot />
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

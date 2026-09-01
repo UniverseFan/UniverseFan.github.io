@@ -1,0 +1,35 @@
+---
+const directions = ["PLAY", "COOK", "LEARN", "WORK"];
+---
+
+<section class="py-20 flex md:flex-row flex-col px-4 md:px-0 gap-10 md:gap-0">
+  <div class="flex flex-col gap-6 justify-start items-start md:w-1/2">
+    <p class="text-pblack tracking-[0.18em] uppercase text-sm">你好，我是</p>
+    <h1 class="text-6xl font-bold leading-[0.95]">Evan<span class="text-ppink">.</span>Zhang</h1>
+    <p class="text-2xl font-semibold max-w-lg">生活不止一个维度。</p>
+    <p class="max-w-xl">这里是我的个人空间，给自己看，给朋友看，也给其他人看。</p>
+    <a
+      href="/work"
+      class="bg-pgreen px-5 py-3 border-1 border-black rounded-lg shadow-card hover:shadow-hover transition"
+    >
+      认识我的工作
+    </a>
+  </div>
+  <div class="md:w-1/2 flex items-center justify-center p-6 md:p-10 group">
+    <a href="/learn">
+      <div
+        class="bg-pblue border-3 border-black rounded-lg w-72 shadow-card group-hover:shadow-hover transition p-5"
+      >
+        <p class="text-sm tracking-[0.18em]">EVAN'S SPACE</p>
+        <div class="mt-8 space-y-3">
+          {directions.map((direction, index) => (
+            <div class="flex items-center justify-between border-b-1 border-black pb-3">
+              <p class="font-bold text-xl">{direction}</p>
+              <span class="font-kablamo text-2xl">0{index + 1}</span>
+            </div>
+          ))}
+        </div>
+      </div></a
+    >
+  </div>
+</section>

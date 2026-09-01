@@ -1,0 +1,47 @@
+---
+import SectionPage from "@/layouts/SectionPage.astro";
+---
+
+<SectionPage
+  title="Work"
+  eyebrow="04 / Experience"
+  description="后端开发方向的学习者与实践者。目前在北京邮电大学攻读网络空间安全硕士，关注可靠、清晰且能落地的工程实现。"
+  accent="bg-pgreen"
+>
+  <div class="space-y-10">
+    <section>
+      <p class="text-pblack text-sm font-semibold">教育经历</p>
+      <div class="mt-4 border-l-3 border-black pl-5 space-y-5">
+        <div>
+          <div class="flex flex-wrap justify-between gap-2"><h2 class="text-2xl font-bold">北京邮电大学</h2><p>2023.09 - 2026.06</p></div>
+          <p class="mt-1">网络空间安全硕士在读</p>
+        </div>
+        <div>
+          <div class="flex flex-wrap justify-between gap-2"><h2 class="text-2xl font-bold">桂林电子科技大学</h2><p>2019.09 - 2023.06</p></div>
+          <p class="mt-1">计算机科学与技术本科</p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <p class="text-pblack text-sm font-semibold">实习经历</p>
+      <div class="mt-4 grid gap-5">
+        <article class="border-1 border-black rounded-lg p-6">
+          <div class="flex flex-wrap justify-between gap-2"><h2 class="text-2xl font-bold">高德地图</h2><p>2025.04 - 2025.08</p></div>
+          <p class="mt-2 font-semibold">消费平台事业部 · Java 后端开发实习生</p>
+          <p class="mt-4 leading-7">参与酒店相关业务开发，围绕订单、优惠与数据处理等服务进行工程实践，关注接口稳定性与业务链路的完整性。</p>
+        </article>
+        <article class="border-1 border-black rounded-lg p-6">
+          <div class="flex flex-wrap justify-between gap-2"><h2 class="text-2xl font-bold">滴滴出行</h2><p>2024.11 - 2025.04</p></div>
+          <p class="mt-2 font-semibold">网约车增长技术 · Go 后端开发实习生</p>
+          <p class="mt-4 leading-7">参与增长业务服务端开发，处理运营活动与用户增长相关需求，并在实践中关注性能、可观测性和数据一致性。</p>
+        </article>
+      </div>
+    </section>
+    <section>
+      <p class="text-pblack text-sm font-semibold">技术栈</p>
+      <ul class="mt-4 flex flex-wrap gap-3">
+        {["Go", "Java", "MySQL", "Redis", "Elasticsearch", "Linux", "网络", "操作系统"].map((skill) => <li class="border-1 border-black rounded-full px-4 py-2">{skill}</li>)}
+      </ul>
+    </section>
+  </div>
+</SectionPage>
